@@ -20,11 +20,11 @@ handler = RotatingFileHandler('app.log', maxBytes=100000, backupCount=5)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
-
+ip_ask = []
 
 @app.route("/")
 def index():
-    return "API for predict service"
+    return "API for predict service " + str(ip_ask)
 
 
 @app.route("/predict", methods=['POST'])
@@ -36,6 +36,8 @@ def predict():
     ip_address = request.headers.get("X-Forwarded-For", request.remote_addr)
     logger.info(f'{current_datatime} request from {ip_address}: {request.json}')
     start_prediction = time()
+
+    ip_ask.append(ip_address)
 
     id = json_input['ID']
     hf = process_input(json_input)
